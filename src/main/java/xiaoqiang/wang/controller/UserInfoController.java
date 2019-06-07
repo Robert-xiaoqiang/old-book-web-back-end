@@ -1,7 +1,7 @@
 package xiaoqiang.wang.controller;
 
 import xiaoqiang.wang.modeldomain.UserInfo;
-import xiaoqiang.wang.service.IUserService;
+import xiaoqiang.wang.service.IUserInfoService;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/users")
-public class UserController {
+public class UserInfoController {
     @Autowired
-    private IUserService iUserService;
+    private IUserInfoService iUserInfoService;
 
     @RequestMapping(value = "/{id}")
-    public List<UserInfo> getUser(@PathVariable int id)
+    public List<UserInfo> getAll(@PathVariable int id)
     {
-        return iUserService.findAll();
+        return iUserInfoService.findAll();
     }
 }

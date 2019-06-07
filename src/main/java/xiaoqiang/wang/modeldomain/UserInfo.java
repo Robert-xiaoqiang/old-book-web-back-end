@@ -16,7 +16,7 @@ public class UserInfo implements Serializable {
     private final static long serialVersionID = 1l;
     @Column(name = "user_id")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "username", nullable = false, unique = true)

@@ -3,7 +3,6 @@ package xiaoqiang.wang.service;
 import java.util.List;
 import xiaoqiang.wang.modeldomain.UserInfo;
 
-public interface IUserService {
-    public List<UserInfo> findByUserName(String userName);
+public interface IUserInfoService {
     public List<UserInfo> findAll();
 }
