@@ -1,5 +1,6 @@
 package xiaoqiang.wang.modeldomain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.io.Serializable;
@@ -45,6 +46,16 @@ public class UserInfo implements Serializable {
                     mappedBy = "userInfo"
             )
     private List<BookBuy> bookBuys = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "userInfo"
+            )
+    private List<OrderInfo> orderInfos = new ArrayList<>();
 
     public long getId()
     {
@@ -102,5 +113,33 @@ public class UserInfo implements Serializable {
     public void setBookBuys(List<BookBuy> bookBuys)
     {
         this.bookBuys = bookBuys;
+    }
+
+    public List<OrderInfo> getOrderInfos()
+    {
+        return orderInfos;
+    }
+
+    public void setOrderInfos(List<OrderInfo> orderInfos)
+    {
+        this.orderInfos = orderInfos;
+    }
+
+    public void addBookSellAndSetUserInfo(BookSell bookSell)
+    {
+        bookSells.add(bookSell);
+        bookSell.setUserInfo(this);
+    }
+
+    public void addBookBuyAndSetUserInfo(BookBuy bookBuy)
+    {
+        bookBuys.add(bookBuy);
+        bookBuy.setUserInfo(this);
+    }
+
+    public void addOrderInfoAndSetUserInfo(OrderInfo orderInfo)
+    {
+        orderInfos.add(orderInfo);
+        orderInfo.setUserInfo(this);
     }
 }

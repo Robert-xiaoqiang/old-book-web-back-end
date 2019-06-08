@@ -90,6 +90,21 @@ create table order_detail (
     on update cascade
 )engine = Innodb, default charset = utf8;
 
+# offline chat information
+create table unread_chat (
+	unread_chat_id integer auto_increment primary key,
+    chat_content varchar(256),
+    sender_id integer references user_info(user_id)
+    on delete cascade
+    on update cascade
+);
+
+#
+# TO-DO
+# without chat_record persistence
+# TO-DO
+#
+
 insert into user_info(username, pass_word, email) values('xiaoqiang', '123', 'xiaoqiang@123.top');
 insert into user_info(username, pass_word, email) values('xiaoqiang1', '1234', 'xiaoqiang1@1234.top');
 insert into user_info(username, pass_word, email) values('xiaoqiang2', '12345', 'xiaoqiang2@12345.top');

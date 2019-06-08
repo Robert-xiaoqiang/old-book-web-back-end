@@ -125,4 +125,21 @@ public class BookInfo implements Serializable {
     {
         this.bookBuys = bookBuys;
     }
+
+    public void addBookCategoryInfo(BookCategoryInfo bookCategoryInfo)
+    {
+        bookCategoryInfos.add(bookCategoryInfo);
+    }
+
+    public void addBookSellAndSetBookInfo(BookSell bookSell)
+    {
+        bookSells.add(bookSell);
+        bookSell.setBookInfo(this);
+    }
+
+    public void addBookBuyAndSetBookInfo(BookBuy bookBuy)
+    {
+        bookBuys.add(bookBuy);
+        bookBuy.setBookInfo(this);
+    }
 }

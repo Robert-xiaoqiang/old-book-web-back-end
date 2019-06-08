@@ -1,6 +1,7 @@
 package xiaoqiang.wang.modeldomain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,6 +36,20 @@ public class BookSell implements Serializable {
 
     @Column(name = "sell_price")
     private double sellPrice;
+
+    /**
+     * null when OrderDetail is an empty table
+     * Is is good design?
+     */
+    @JsonManagedReference
+    @OneToOne
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "bookSell"
+            )
+    private OrderDetail orderDetail;
 
     public long getId() {
         return Id;
@@ -81,5 +96,15 @@ public class BookSell implements Serializable {
     public void setUserInfo(UserInfo userInfo)
     {
         this.userInfo = userInfo;
+    }
+
+    public OrderDetail getOrderDetail()
+    {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(OrderDetail orderDetail)
+    {
+        this.orderDetail = orderDetail;
     }
 }

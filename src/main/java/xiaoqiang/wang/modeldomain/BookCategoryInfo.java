@@ -75,4 +75,9 @@ public class BookCategoryInfo implements Serializable {
     {
         this.bookInfos = bookInfos;
     }
+
+    public void addBookInfo(BookInfo bookInfo)
+    {
+        bookInfos.add(bookInfo);
+    }
 }
