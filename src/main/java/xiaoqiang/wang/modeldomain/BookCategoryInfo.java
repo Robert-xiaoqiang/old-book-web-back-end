@@ -1,5 +1,7 @@
 package xiaoqiang.wang.modeldomain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.*;
 
 import java.io.Serializable;
@@ -9,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "book_category_info")
 public class BookCategoryInfo implements Serializable {
+    private final static long serialVersionID = 1l;
     @Column(name = "book_category_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +23,14 @@ public class BookCategoryInfo implements Serializable {
     @Column(name = "book_category_intro", nullable = false)
     private String categoryIntro;
 
+    @JsonBackReference
     @ManyToMany
             (
                 cascade = {
-                        CascadeType.ALL
+                        CascadeType.DETACH,
+                        CascadeType.MERGE,
+                        CascadeType.REFRESH,
+                        CascadeType.PERSIST
                 },
                 mappedBy = "bookCategoryInfos"
             )

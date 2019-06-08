@@ -18,6 +18,20 @@ public class UserInfoService implements IUserInfoService {
     @Autowired
     private UserInfoJpaRepository userInfoJpaRepository;
 
+    @Override
+    public void insertOne(UserInfo userInfo)
+    {
+        userInfoJpaRepository.save(userInfo);
+    }
+
+    @Override
+    public UserInfo findByUserName(String userName)
+    {
+        List<UserInfo> lui = userInfoJpaRepository.findByUserName(userName);
+        return lui.size() > 0 ? lui.get(0) : null;
+    }
+
+    @Override
     public List<UserInfo> findAll()
     {
         return userInfoJpaRepository.findAll();

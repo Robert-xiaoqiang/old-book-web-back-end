@@ -33,6 +33,8 @@ create table book_with_category (
     primary key(book_id, book_category_id)
 )engine = Innodb, default charset = utf8;
 
+# here book is one-by-one
+# cannot counting book
 create table book_sell (
 	book_sell_id integer auto_increment primary key,
     book_id integer references book_info(book_id)
@@ -45,6 +47,8 @@ create table book_sell (
     sell_price decimal(10, 5) not null
 )engine = Innodb, default charset = utf8;
 
+# here book is one-by-one
+# cannot counting book
 create table book_buy (
 	book_buy_id integer auto_increment primary key,
 	book_id integer references book_info(book_id)
@@ -57,10 +61,16 @@ create table book_buy (
     upper_price decimal(10, 5) not null
 )engine = Innodb, default charset = utf8;
 
+
 create table order_info (
 	order_id integer auto_increment primary key,
     order_timestamp timestamp not null,
     trade_place varchar(32) not null,
+	# must a buyer
+    # may not a book_buy
+    buyer_id integer references user_info(user_id)
+	on delete cascade
+    on update cascade,
     
     # subjected to off-line trading
     trade_timestamp timestamp
@@ -75,12 +85,7 @@ create table order_detail (
     # one-to-one???
     # multiple same books to sell???
     # here is a simple case
-    book_sell_id integer references book_sell(book_sell_id)
-	on delete cascade
-    on update cascade,
-    # must a buyer
-    # may not a book_buy
-    buyer_id integer references user_info(user_id)
+    book_sell_id integer unique references book_sell(book_sell_id)
 	on delete cascade
     on update cascade
 )engine = Innodb, default charset = utf8;

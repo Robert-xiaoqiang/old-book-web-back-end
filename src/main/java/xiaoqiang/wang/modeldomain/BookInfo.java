@@ -1,23 +1,17 @@
 package xiaoqiang.wang.modeldomain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 import java.util.ArrayList;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "book_info")
 public class BookInfo implements Serializable {
+    private final static long serialVersionID = 1l;
     @Column(name = "book_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -29,10 +23,14 @@ public class BookInfo implements Serializable {
     @Column(name = "book_intro")
     private String bookIntro;
 
+    @JsonManagedReference
     @ManyToMany
             (
                     cascade = {
-                            CascadeType.ALL
+                            CascadeType.DETACH,
+                            CascadeType.MERGE,
+                            CascadeType.REFRESH,
+                            CascadeType.PERSIST
                     }
             )
     @JoinTable
@@ -46,6 +44,27 @@ public class BookInfo implements Serializable {
                     }
             )
     private List<BookCategoryInfo> bookCategoryInfos = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                        CascadeType.ALL
+                    },
+                    mappedBy = "bookInfo"
+
+            )
+    private List<BookSell> bookSells = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "bookInfo"
+            )
+    private List<BookBuy> bookBuys = new ArrayList<>();
 
     public long getId()
     {
@@ -85,5 +104,25 @@ public class BookInfo implements Serializable {
     public void setBookCategoryInfos(List<BookCategoryInfo> bookCategoryInfos)
     {
         this.bookCategoryInfos = bookCategoryInfos;
+    }
+
+    public List<BookSell> getBookSells()
+    {
+        return bookSells;
+    }
+
+    public void setBookSells(List<BookSell> bookSells)
+    {
+        this.bookSells = bookSells;
+    }
+
+    public List<BookBuy> getBookBuys()
+    {
+        return bookBuys;
+    }
+
+    public void setBookBuys(List<BookBuy> bookBuys)
+    {
+        this.bookBuys = bookBuys;
     }
 }

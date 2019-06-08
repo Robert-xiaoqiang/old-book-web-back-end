@@ -1,13 +1,11 @@
 package xiaoqiang.wang.modeldomain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.NamedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
 
 
 @Entity
@@ -27,6 +25,26 @@ public class UserInfo implements Serializable {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "userInfo"
+            )
+    private List<BookSell> bookSells = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "userInfo"
+            )
+    private List<BookBuy> bookBuys = new ArrayList<>();
 
     public long getId()
     {
@@ -64,5 +82,25 @@ public class UserInfo implements Serializable {
     public void setEmail(String email)
     {
         this.email = email;
+    }
+
+    public List<BookSell> getBookSells()
+    {
+        return bookSells;
+    }
+
+    public void setBookSells(List<BookSell> bookSells)
+    {
+        this.bookSells = bookSells;
+    }
+
+    public List<BookBuy> getBookBuys()
+    {
+        return bookBuys;
+    }
+
+    public void setBookBuys(List<BookBuy> bookBuys)
+    {
+        this.bookBuys = bookBuys;
     }
 }
