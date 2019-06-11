@@ -6,5 +6,7 @@ import xiaoqiang.wang.modeldomain.UserInfo;
 import java.util.List;
 
 public interface UserInfoJpaRepository extends JpaRepository<UserInfo, Long> {
-    public List<UserInfo> findByUserName(String userName);
+    public UserInfo findByUserName(String userName);
+    public UserInfo findByEmail(String email);
+    public void deleteByUserName(String userName);
 }

@@ -19,16 +19,31 @@ public class UserInfoService implements IUserInfoService {
     private UserInfoJpaRepository userInfoJpaRepository;
 
     @Override
-    public void insertOne(UserInfo userInfo)
+    public void insertOne(String userName, String password, String email)
     {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserName(userName);
+        userInfo.setPassword(password);
+        userInfo.setEmail(email);
+
         userInfoJpaRepository.save(userInfo);
+    }
+
+    @Override
+    public void deleteByUserName(String userName)
+    {
+        userInfoJpaRepository.deleteByUserName(userName);
     }
 
     @Override
     public UserInfo findByUserName(String userName)
     {
-        List<UserInfo> lui = userInfoJpaRepository.findByUserName(userName);
-        return lui.size() > 0 ? lui.get(0) : null;
+        return userInfoJpaRepository.findByUserName(userName);
+    }
+
+    @Override
+    public UserInfo findByEmail(String email) {
+        return userInfoJpaRepository.findByEmail(email);
     }
 
     @Override

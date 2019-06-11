@@ -91,8 +91,8 @@ create table order_detail (
 )engine = Innodb, default charset = utf8;
 
 # offline chat information
-create table unread_chat (
-	unread_chat_id integer auto_increment primary key,
+create table unread_message (
+	unread_message_id integer auto_increment primary key,
     chat_content varchar(256),
     sender_id integer references user_info(user_id)
     on delete cascade

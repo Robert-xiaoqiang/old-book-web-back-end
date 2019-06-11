@@ -57,6 +57,16 @@ public class UserInfo implements Serializable {
             )
     private List<OrderInfo> orderInfos = new ArrayList<>();
 
+    @JsonManagedReference
+    @OneToMany
+            (
+                    cascade = {
+                            CascadeType.ALL
+                    },
+                    mappedBy = "userInfo"
+            )
+    private List<UnreadMessage> unreadMessages = new ArrayList<>();
+
     public long getId()
     {
         return id;
@@ -125,6 +135,14 @@ public class UserInfo implements Serializable {
         this.orderInfos = orderInfos;
     }
 
+    public List<UnreadMessage> getUnreadMessages() {
+        return unreadMessages;
+    }
+
+    public void setUnreadMessages(List<UnreadMessage> unreadMessages) {
+        this.unreadMessages = unreadMessages;
+    }
+
     public void addBookSellAndSetUserInfo(BookSell bookSell)
     {
         bookSells.add(bookSell);
@@ -141,5 +159,11 @@ public class UserInfo implements Serializable {
     {
         orderInfos.add(orderInfo);
         orderInfo.setUserInfo(this);
+    }
+
+    public void addUnreadMessageAndSetUserInfo(UnreadMessage unreadMessage)
+    {
+        unreadMessages.add(unreadMessage);
+        unreadMessage.setUserInfo(this);
     }
 }

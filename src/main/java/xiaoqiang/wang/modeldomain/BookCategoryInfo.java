@@ -81,3 +81,4 @@ public class BookCategoryInfo implements Serializable {
         bookInfos.add(bookInfo);
     }
 }
+

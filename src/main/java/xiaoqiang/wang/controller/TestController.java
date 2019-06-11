@@ -1,5 +1,6 @@
 package xiaoqiang.wang.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import xiaoqiang.wang.modeldomain.*;
 import xiaoqiang.wang.service.*;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/test")
+@CrossOrigin(origins = "*", allowCredentials = "true")
 public class TestController {
     @Autowired
     IUserInfoService iUserInfoService;
