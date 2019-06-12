@@ -18,6 +18,7 @@ create table book_category_info (
 create table book_info (
 	book_id integer auto_increment primary key,
     book_name varchar(128) not null,
+    book_image_file_name varchar(128) not null,
     book_intro varchar(128)
 )engine = Innodb, default charset = utf8;
 
@@ -37,28 +38,32 @@ create table book_with_category (
 # cannot counting book
 create table book_sell (
 	book_sell_id integer auto_increment primary key,
-    book_id integer references book_info(book_id)
-	on delete cascade
-    on update cascade,
-    seller_id integer references user_info(user_id)
-	on delete cascade
-    on update cascade,
+    book_id integer not null,
+    seller_id integer not null,
     origin_price decimal(10, 5) not null,
-    sell_price decimal(10, 5) not null
+    sell_price decimal(10, 5) not null,
+    foreign key(book_id) references book_info(book_id)
+	on delete cascade
+    on update cascade,
+    foreign key(seller_id) references user_info(user_id)
+	on delete cascade
+    on update cascade
 )engine = Innodb, default charset = utf8;
 
 # here book is one-by-one
 # cannot counting book
 create table book_buy (
 	book_buy_id integer auto_increment primary key,
-	book_id integer references book_info(book_id)
-	on delete cascade
-    on update cascade,
-    buyer_id integer references user_info(user_id)
-	on delete cascade
-    on update cascade,
+	book_id integer not null,
+    buyer_id integer not null,
     lower_price decimal(10, 5) not null,
-    upper_price decimal(10, 5) not null
+    upper_price decimal(10, 5) not null,
+    foreign key(book_id) references book_info(book_id)
+	on delete cascade
+    on update cascade,
+    foreign key(buyer_id) references user_info(user_id)
+	on delete cascade
+    on update cascade
 )engine = Innodb, default charset = utf8;
 
 
@@ -68,24 +73,27 @@ create table order_info (
     trade_place varchar(32) not null,
 	# must a buyer
     # may not a book_buy
-    buyer_id integer references user_info(user_id)
-	on delete cascade
-    on update cascade,
+    buyer_id integer not null,
     
     # subjected to off-line trading
-    trade_timestamp timestamp
+    trade_timestamp timestamp,
+    foreign key(buyer_id) references user_info(user_id)
+	on delete cascade
+    on update cascade
 )engine = Innodb, default charset = utf8;
 
 create table order_detail (
 	order_detail_id integer auto_increment primary key,
-    order_id integer references order_info(order_id)
-	on delete cascade
-    on update cascade,
+    order_id integer not null,
     
     # one-to-one???
     # multiple same books to sell???
     # here is a simple case
-    book_sell_id integer unique references book_sell(book_sell_id)
+    book_sell_id integer unique not null,
+    foreign key(order_id)  references order_info(order_id)
+	on delete cascade
+    on update cascade,
+    foreign key(book_sell_id) references book_sell(book_sell_id)
 	on delete cascade
     on update cascade
 )engine = Innodb, default charset = utf8;
@@ -94,7 +102,8 @@ create table order_detail (
 create table unread_message (
 	unread_message_id integer auto_increment primary key,
     chat_content varchar(256),
-    sender_id integer references user_info(user_id)
+    sender_id integer not null,
+    foreign key(sender_id) references user_info(user_id)
     on delete cascade
     on update cascade
 );

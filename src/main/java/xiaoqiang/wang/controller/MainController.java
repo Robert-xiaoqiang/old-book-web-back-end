@@ -2,6 +2,7 @@ package xiaoqiang.wang.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xiaoqiang.wang.modeldomain.UserInfo;
 import xiaoqiang.wang.service.impl.UserInfoService;
 
 import java.util.Map;
@@ -13,19 +14,23 @@ public class MainController {
     @Autowired
     private UserInfoService userInfoService;
 
+
+    @RequestMapping(value = "/allusers")
+    MyResponseBody register()
+    {
+        MyResponseBody ret = new MyResponseBody(true, "all data for debugging", userInfoService.findAll());
+        return ret;
+    }
+
     @RequestMapping(value = "/register")
-    @ResponseBody
     MyResponseBody register(
-            @RequestBody
-            Map<String, String> httpRequestBody
+            @RequestParam String userName,
+            @RequestParam String password,
+            @RequestParam String email
     )
     {
         MyResponseBody ret = null;
-        String userName = httpRequestBody.get("userName");
-        String password = httpRequestBody.get("password");
-        String email = httpRequestBody.get("email");
-
-        userInfoService.deleteByUserName(userName);
+        // userInfoService.deleteByUserName(userName);
         if(userInfoService.findByUserName(userName) != null) {
             ret = new MyResponseBody(false, "userName has already existed", null);
         } else if(userInfoService.findByEmail(email) != null) {
@@ -38,4 +43,26 @@ public class MainController {
         return ret;
     }
 
+    @RequestMapping(value = "/login")
+    MyResponseBody login(
+            @RequestParam String userName,
+            @RequestParam String password
+    )
+    {
+        MyResponseBody ret = null;
+        UserInfo userInfo = userInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName doesn\'t exist", null);
+        } else if(!userInfo.getPassword().equals(password)) {
+            ret = new MyResponseBody(false, "password is not matched", null);
+        } else {
+            ret = new MyResponseBody(true, null, null);
+        }
+        return ret;
+    }
+
+    @RequestMapping(value = "/upload")
+
 }
+
+

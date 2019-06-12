@@ -23,6 +23,9 @@ public class BookInfo implements Serializable {
     @Column(name = "book_intro")
     private String bookIntro;
 
+    @Column(name = "book_image_file_name")
+    private String bookImageFileName;
+
     @JsonManagedReference
     @ManyToMany
             (
@@ -94,6 +97,14 @@ public class BookInfo implements Serializable {
     public void setBookIntro(String bookIntro)
     {
         this.bookIntro = bookIntro;
+    }
+
+    public String getBookImageFileName() {
+        return bookImageFileName;
+    }
+
+    public void setBookImageFileName(String bookImageFileName) {
+        this.bookImageFileName = bookImageFileName;
     }
 
     public List<BookCategoryInfo> getBookCategoryInfos()

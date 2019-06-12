@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "unread_table")
+@Table(name = "unread_message")
 public class UnreadMessage implements Serializable {
     private final static long serialVersionID = 1l;
     @Column(name = "unread_message_id")

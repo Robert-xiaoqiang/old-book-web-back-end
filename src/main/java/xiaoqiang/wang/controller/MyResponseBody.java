@@ -1,8 +1,11 @@
 package xiaoqiang.wang.controller;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
+@ResponseBody
 public class MyResponseBody implements Serializable {
     private final static long serialVersionID = 1l;
 
@@ -14,5 +17,15 @@ public class MyResponseBody implements Serializable {
         httpResponseBody.put("status", status);
         httpResponseBody.put("message", message);
         httpResponseBody.put("data", data);
+    }
+
+    public HashMap<String, Object> getHttpResponseBody()
+    {
+        return httpResponseBody;
+    }
+
+    public void setHttpResponseBody(HashMap<String, Object> httpResponseBody)
+    {
+        this.httpResponseBody = httpResponseBody;
     }
 }

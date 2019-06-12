@@ -32,32 +32,33 @@ public class TestController {
     @RequestMapping(value = "/")
     public List<BookSell> test()
     {
-//        BookCategoryInfo bci1 = iBookCategoryInfoService.findByCategoryName("AA毛泽东思想");
-//        BookCategoryInfo bci2 = iBookCategoryInfoService.findByCategoryName("TP自动化计算机技术");
-//
-//        BookSell bs = new BookSell();
-//        UserInfo ui = iUserInfoService.findByUserName("xiaoqiang");
-//        BookInfo bi = new BookInfo();
-//
-//        bi.setBookName("Hand First Haskell");
-//        bi.getBookCategoryInfos().add(bci1);
-//        bi.getBookCategoryInfos().add(bci2);
-//
-//        bci1.getBookInfos().add(bi);
-//        bci2.getBookInfos().add(bi);
-//
-//        bi.setBookIntro("Learning with BUGS");
-//        bi.getBookSells().add(bs);
-//
-//        ui.getBookSells().add(bs);
-//
-//        bs.setBookInfo(bi);
-//        bs.setUserInfo(ui);
-//        bs.setOriginPrice(12.0);
-//        bs.setSellPrice(10.0);
-//
-//        iBookInfoService.insertOne(bi);
-//        iBookSellService.insertOne(bs);
+        BookCategoryInfo bci1 = iBookCategoryInfoService.findByCategoryName("AA毛泽东思想");
+        BookCategoryInfo bci2 = iBookCategoryInfoService.findByCategoryName("TP自动化计算机技术");
+
+        BookSell bs = new BookSell();
+        UserInfo ui = iUserInfoService.findByUserName("xiaoqiang");
+        BookInfo bi = new BookInfo();
+
+        bi.setBookName("Hand First Haskell");
+        bi.getBookCategoryInfos().add(bci1);
+        bi.getBookCategoryInfos().add(bci2);
+
+        bci1.getBookInfos().add(bi);
+        bci2.getBookInfos().add(bi);
+
+        bi.setBookIntro("Learning with BUGS");
+        bi.setBookImageFileName("12/12.png");
+        bi.getBookSells().add(bs);
+
+        ui.getBookSells().add(bs);
+
+        bs.setBookInfo(bi);
+        bs.setUserInfo(ui);
+        bs.setOriginPrice(12.0);
+        bs.setSellPrice(10.0);
+
+        iBookInfoService.insertOne(bi);
+        iBookSellService.insertOne(bs);
         return iBookSellService.findAll();
     }
 }
