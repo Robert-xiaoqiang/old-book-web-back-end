@@ -16,9 +16,10 @@ public class BookBuyService implements IBookBuyService {
     BookBuyJpaRepository bookBuyJpaRepository;
 
     @Override
-    public void insertOne(BookBuy bookBuy)
+    public BookBuy insertOne(BookBuy bookBuy)
     {
         bookBuyJpaRepository.save(bookBuy);
+        return bookBuy;
     }
 
     @Override

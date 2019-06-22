@@ -7,6 +7,6 @@ import xiaoqiang.wang.modeldomain.BookBuy;
 import java.util.List;
 
 public interface IBookBuyService {
-    public void insertOne(BookBuy bookBuy);
+    public BookBuy insertOne(BookBuy bookBuy);
     public List<BookBuy> findAll();
 }

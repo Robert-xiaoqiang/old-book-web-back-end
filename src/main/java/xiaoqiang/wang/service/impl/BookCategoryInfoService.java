@@ -17,9 +17,13 @@ public class BookCategoryInfoService implements IBookCategoryInfoService {
     private BookCategoryInfoJpaRepository bookCategoryInfoJpaRepository;
 
     @Override
-    public void insertOne(BookCategoryInfo bookCategoryInfo)
+    public BookCategoryInfo insertOne(String bookCategoryInfoName, String bookCategoryInfoIntro)
     {
+        BookCategoryInfo bookCategoryInfo = new BookCategoryInfo();
+        bookCategoryInfo.setCategoryName(bookCategoryInfoName);
+        bookCategoryInfo.setCategoryIntro(bookCategoryInfoIntro);
         bookCategoryInfoJpaRepository.save(bookCategoryInfo);
+        return bookCategoryInfo;
     }
 
     @Override

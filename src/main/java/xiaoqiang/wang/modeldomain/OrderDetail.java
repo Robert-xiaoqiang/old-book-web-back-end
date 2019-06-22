@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "order_detail")
@@ -31,6 +32,13 @@ public class OrderDetail implements Serializable {
     @JoinColumn(name = "book_sell_id", unique = true)
     private BookSell bookSell;
 
+
+    @Column(name = "trade_place", nullable = false)
+    private String tradePlace;
+
+    @Column(name = "trade_timestamp")
+    private Date tradeTimestamp;
+
     public long getId()
     {
         return Id;
@@ -39,6 +47,22 @@ public class OrderDetail implements Serializable {
     public void setId(long id)
     {
         Id = id;
+    }
+
+    public Date getTradeTimestamp() {
+        return tradeTimestamp;
+    }
+
+    public void setTradeTimestamp(Date tradeTimestamp) {
+        this.tradeTimestamp = tradeTimestamp;
+    }
+
+    public String getTradePlace() {
+        return tradePlace;
+    }
+
+    public void setTradePlace(String tradePlace) {
+        this.tradePlace = tradePlace;
     }
 
     public BookSell getBookSell()

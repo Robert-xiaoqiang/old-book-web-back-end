@@ -1,5 +1,6 @@
 package xiaoqiang.wang.service.impl;
 
+import xiaoqiang.wang.modeldomain.BookCategoryInfo;
 import xiaoqiang.wang.service.IBookInfoService;
 import xiaoqiang.wang.modeldomain.BookInfo;
 import xiaoqiang.wang.dao.BookInfoJpaRepository;
@@ -17,9 +18,21 @@ public class BookInfoService implements IBookInfoService {
     private BookInfoJpaRepository bookInfoJpaRepository;
 
     @Override
-    public void insertOne(BookInfo bookInfo)
+    public BookInfo insertOne(String bookName, String bookIntro,
+                              String bookIntroURL, String bookImageURL,
+                              List<BookCategoryInfo> bookCategories)
     {
+        final BookInfo bookInfo = new BookInfo();
+        bookInfo.setBookName(bookName);
+        bookInfo.setBookIntro(bookIntro);
+        bookInfo.setBookIntroURL(bookIntroURL);
+        bookInfo.setBookImageURL(bookImageURL);
+        bookCategories.stream().forEach(c -> {
+            bookInfo.addBookCategoryInfo(c);
+            return;
+        });
         bookInfoJpaRepository.save(bookInfo);
+        return bookInfo;
     }
 
     @Override

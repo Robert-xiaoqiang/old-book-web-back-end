@@ -20,9 +20,6 @@ public class OrderInfo implements Serializable {
     @Column(name = "order_timestamp", nullable = false)
     private Date orderTimestamp;
 
-    @Column(name = "trade_place", nullable = false)
-    private String tradePlace;
-
     @JsonBackReference
     @ManyToOne
             (
@@ -31,8 +28,7 @@ public class OrderInfo implements Serializable {
     @JoinColumn(name = "buyer_id")
     private UserInfo userInfo;
 
-    @Column(name = "trade_timestamp")
-    private Date tradeTimestamp;
+
 
     @JsonManagedReference
     @OneToMany
@@ -62,26 +58,6 @@ public class OrderInfo implements Serializable {
     public void setOrderTimestamp(Date orderTimestamp)
     {
         this.orderTimestamp = orderTimestamp;
-    }
-
-    public String getTradePlace()
-    {
-        return tradePlace;
-    }
-
-    public void setTradePlace(String tradePlace)
-    {
-        this.tradePlace = tradePlace;
-    }
-
-    public Date getTradeTimestamp()
-    {
-        return tradeTimestamp;
-    }
-
-    public void setTradeTimestamp(Date tradeTimestamp)
-    {
-        this.tradeTimestamp = tradeTimestamp;
     }
 
     public UserInfo getUserInfo()

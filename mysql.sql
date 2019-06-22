@@ -18,8 +18,9 @@ create table book_category_info (
 create table book_info (
 	book_id integer auto_increment primary key,
     book_name varchar(128) not null,
-    book_image_file_name varchar(128) not null,
-    book_intro varchar(128)
+    book_image_url varchar(128) not null,
+    book_intro varchar(128),
+    book_intro_url varchar(128)
 )engine = Innodb, default charset = utf8;
 
 create table book_with_category (
@@ -66,17 +67,14 @@ create table book_buy (
     on update cascade
 )engine = Innodb, default charset = utf8;
 
-
 create table order_info (
 	order_id integer auto_increment primary key,
-    order_timestamp timestamp not null,
-    trade_place varchar(32) not null,
 	# must a buyer
     # may not a book_buy
     buyer_id integer not null,
+    order_timestamp timestamp not null,
+    order_state tinyint not null, # 0 shopping, 1 cancel, 2 finish
     
-    # subjected to off-line trading
-    trade_timestamp timestamp,
     foreign key(buyer_id) references user_info(user_id)
 	on delete cascade
     on update cascade
@@ -84,11 +82,15 @@ create table order_info (
 
 create table order_detail (
 	order_detail_id integer auto_increment primary key,
-    order_id integer not null,
-    
-    # one-to-one???
+    order_id integer not null,    
+    trade_place varchar(128) not null,
+	# subjected to off-line trading
+    trade_timestamp timestamp,
+    # @note
+    # one-to-one is a constraint
     # multiple same books to sell???
     # here is a simple case
+    # @note
     book_sell_id integer unique not null,
     foreign key(order_id)  references order_info(order_id)
 	on delete cascade

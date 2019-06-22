@@ -23,8 +23,11 @@ public class BookInfo implements Serializable {
     @Column(name = "book_intro")
     private String bookIntro;
 
-    @Column(name = "book_image_file_name")
-    private String bookImageFileName;
+    @Column(name = "book_intro_url")
+    private String bookIntroURL;
+
+    @Column(name = "book_image_url")
+    private String bookImageURL;
 
     @JsonManagedReference
     @ManyToMany
@@ -99,12 +102,20 @@ public class BookInfo implements Serializable {
         this.bookIntro = bookIntro;
     }
 
-    public String getBookImageFileName() {
-        return bookImageFileName;
+    public String getBookIntroURL() {
+        return bookIntroURL;
     }
 
-    public void setBookImageFileName(String bookImageFileName) {
-        this.bookImageFileName = bookImageFileName;
+    public void setBookIntroURL(String bookIntroURL) {
+        this.bookIntroURL = bookIntroURL;
+    }
+
+    public String getBookImageURL() {
+        return bookImageURL;
+    }
+
+    public void setBookImageURL(String bookImageURL) {
+        this.bookImageURL = bookImageURL;
     }
 
     public List<BookCategoryInfo> getBookCategoryInfos()
