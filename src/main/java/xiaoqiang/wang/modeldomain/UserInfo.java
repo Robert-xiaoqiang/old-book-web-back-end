@@ -27,6 +27,9 @@ public class UserInfo implements Serializable {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "avatar_url", nullable = false)
+    private String avatarURL;
+
     @JsonManagedReference
     @OneToMany
             (
@@ -103,6 +106,14 @@ public class UserInfo implements Serializable {
     public void setEmail(String email)
     {
         this.email = email;
+    }
+
+    public String getAvatarURL() {
+        return avatarURL;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
     }
 
     public List<BookSell> getBookSells()

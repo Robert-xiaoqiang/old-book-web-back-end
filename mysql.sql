@@ -6,7 +6,8 @@ create table user_info (
 	user_id integer auto_increment primary key,
     username varchar(32) unique not null,
     pass_word varchar(32),
-    email varchar(32) unique not null
+    email varchar(32) unique not null,
+    avatar_url varchar(128) not null
 )engine = Innodb, default charset = utf8;
 
 create table book_category_info (
@@ -116,9 +117,9 @@ create table unread_message (
 # TO-DO
 #
 
-insert into user_info(username, pass_word, email) values('xiaoqiang', '123', 'xiaoqiang@123.top');
-insert into user_info(username, pass_word, email) values('xiaoqiang1', '1234', 'xiaoqiang1@1234.top');
-insert into user_info(username, pass_word, email) values('xiaoqiang2', '12345', 'xiaoqiang2@12345.top');
+insert into user_info(username, pass_word, email, avatar_url) values('xiaoqiang', '123', 'xiaoqiang@123.top', 'fake.url');
+insert into user_info(username, pass_word, email, avatar_url) values('xiaoqiang1', '1234', 'xiaoqiang1@1234.top', 'fake.url');
+insert into user_info(username, pass_word, email, avatar_url) values('xiaoqiang2', '12345', 'xiaoqiang2@12345.top', 'fake.url');
 
 
 insert into book_category_info(book_category_name, book_category_intro) values('A马克思列宁主义', 'A马克思列宁主义啊, 祖国');#1

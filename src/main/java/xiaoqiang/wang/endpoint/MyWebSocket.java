@@ -35,6 +35,8 @@ public class MyWebSocket {
         subOnlineCount();
         // do nothing
         // we have sent information before that
+        MyWebSocket.guySessionMap.clear();
+        MyWebSocket.onlineCount = 0;
         log.info("close a connection, current user online: " + getOnlineCount());
     }
 
@@ -47,15 +49,14 @@ public class MyWebSocket {
         String to = (String)json.get("to");
         String content = (String)json.get("content");
         if(from != null && !from.isEmpty()) {
-            if(!MyWebSocket.guySessionMap.containsKey(from)) {
-                MyWebSocket.guySessionMap.put(from, session);
-            }
+            // update or insert
+            MyWebSocket.guySessionMap.put(from, session);
 //            if(from != null && !from.isEmpty() && content.equals("exit")) {
 //                MyWebSocket.guySessionMap.remove(from);
 //            }
             if(to != null && !to.isEmpty() && !content.isEmpty()) {
                 if(guySessionMap.containsKey(to)) {
-                    sendMessage(MyWebSocket.guySessionMap.get(to), content);
+                    sendMessage(MyWebSocket.guySessionMap.get(to), message);
                 } else {
                     // not log in
                     // write db
@@ -85,7 +86,7 @@ public class MyWebSocket {
 
 
     private static synchronized int getOnlineCount() {
-        return onlineCount;
+        return MyWebSocket.onlineCount;
     }
 
     public void sendMessage(Session session, String message)

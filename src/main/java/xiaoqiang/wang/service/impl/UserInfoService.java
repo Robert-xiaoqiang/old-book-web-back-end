@@ -19,14 +19,17 @@ public class UserInfoService implements IUserInfoService {
     private UserInfoJpaRepository userInfoJpaRepository;
 
     @Override
-    public void insertOne(String userName, String password, String email)
+    public UserInfo insertOne(String userName, String password, String email, String avatarURL)
     {
         UserInfo userInfo = new UserInfo();
         userInfo.setUserName(userName);
         userInfo.setPassword(password);
         userInfo.setEmail(email);
+        userInfo.setAvatarURL(avatarURL);
 
         userInfoJpaRepository.save(userInfo);
+
+        return userInfo;
     }
 
     @Override
