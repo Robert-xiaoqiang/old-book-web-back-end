@@ -86,7 +86,7 @@ public class MainController {
         } else if(!userInfo.getPassword().equals(password)) {
             ret = new MyResponseBody(false, "password is not matched", null);
         } else {
-            ret = new MyResponseBody(true, null, null);
+            ret = new MyResponseBody(true, null, new LoginResponseBody(userInfo));
         }
         return ret;
     }
