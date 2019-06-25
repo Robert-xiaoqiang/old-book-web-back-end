@@ -20,14 +20,14 @@ public class BookInfoService implements IBookInfoService {
     @Override
     public BookInfo insertOne(String bookName, String bookIntro,
                               String bookIntroURL, String bookImageURL,
-                              List<BookCategoryInfo> bookCategories)
+                              List<BookCategoryInfo> bookCategoryInfos)
     {
         final BookInfo bookInfo = new BookInfo();
         bookInfo.setBookName(bookName);
         bookInfo.setBookIntro(bookIntro);
         bookInfo.setBookIntroURL(bookIntroURL);
         bookInfo.setBookImageURL(bookImageURL);
-        bookCategories.stream().forEach(c -> {
+        bookCategoryInfos.stream().forEach(c -> {
             bookInfo.addBookCategoryInfo(c);
             return;
         });

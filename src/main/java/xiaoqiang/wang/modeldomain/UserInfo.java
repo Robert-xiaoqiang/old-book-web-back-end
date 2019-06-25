@@ -154,27 +154,28 @@ public class UserInfo implements Serializable {
         this.unreadMessages = unreadMessages;
     }
 
-    public void addBookSellAndSetUserInfo(BookSell bookSell)
+    /**
+     * @note setUserInfo is unnecessary
+     * before adding, we have already created an object with the foreign key
+     * @param bookSell
+     */
+    public void addBookSell(BookSell bookSell)
     {
         bookSells.add(bookSell);
-        bookSell.setUserInfo(this);
     }
 
-    public void addBookBuyAndSetUserInfo(BookBuy bookBuy)
+    public void addBookBuy(BookBuy bookBuy)
     {
         bookBuys.add(bookBuy);
-        bookBuy.setUserInfo(this);
     }
 
-    public void addOrderInfoAndSetUserInfo(OrderInfo orderInfo)
+    public void addOrderInfo(OrderInfo orderInfo)
     {
         orderInfos.add(orderInfo);
-        orderInfo.setUserInfo(this);
     }
 
-    public void addUnreadMessageAndSetUserInfo(UnreadMessage unreadMessage)
+    public void addUnreadMessage(UnreadMessage unreadMessage)
     {
         unreadMessages.add(unreadMessage);
-        unreadMessage.setUserInfo(this);
     }
 }

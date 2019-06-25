@@ -155,15 +155,13 @@ public class BookInfo implements Serializable {
         bookCategoryInfos.add(bookCategoryInfo);
     }
 
-    public void addBookSellAndSetBookInfo(BookSell bookSell)
+    public void addBookSell(BookSell bookSell)
     {
         bookSells.add(bookSell);
-        bookSell.setBookInfo(this);
     }
 
-    public void addBookBuyAndSetBookInfo(BookBuy bookBuy)
+    public void addBookBuy(BookBuy bookBuy)
     {
         bookBuys.add(bookBuy);
-        bookBuy.setBookInfo(this);
     }
 }

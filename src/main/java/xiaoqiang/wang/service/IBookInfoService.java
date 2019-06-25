@@ -8,7 +8,7 @@ import java.util.*;
 public interface IBookInfoService {
     public BookInfo insertOne(String bookName, String bookIntro,
                               String bookIntroURL, String bookImageURL,
-                              List<BookCategoryInfo> bookCategories);
+                              List<BookCategoryInfo> bookCategoryInfos);
     public List<BookInfo> findAll();
     public void deleteAll();
 }

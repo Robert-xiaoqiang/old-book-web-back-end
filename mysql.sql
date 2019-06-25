@@ -86,7 +86,7 @@ create table order_detail (
     order_id integer not null,    
     trade_place varchar(128) not null,
 	# subjected to off-line trading
-    trade_timestamp timestamp,
+    trade_timestamp date,
     # @note
     # one-to-one is a constraint
     # multiple same books to sell???

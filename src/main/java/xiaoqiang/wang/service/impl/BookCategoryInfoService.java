@@ -9,6 +9,7 @@ import xiaoqiang.wang.modeldomain.BookCategoryInfo;
 import xiaoqiang.wang.service.IBookCategoryInfoService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,6 +27,7 @@ public class BookCategoryInfoService implements IBookCategoryInfoService {
         return bookCategoryInfo;
     }
 
+
     @Override
     public List<BookCategoryInfo> findAll()
     {
@@ -35,7 +37,14 @@ public class BookCategoryInfoService implements IBookCategoryInfoService {
     @Override
     public BookCategoryInfo findByCategoryName(String categoryName)
     {
-        List<BookCategoryInfo> lbci = bookCategoryInfoJpaRepository.findByCategoryName(categoryName);
-        return lbci.size() > 0 ? lbci.get(0) : null;
+        Optional<BookCategoryInfo> obci = bookCategoryInfoJpaRepository.findByCategoryName(categoryName);
+        return obci.orElse(null);
+    }
+
+    @Override
+    public BookCategoryInfo findById(Long id)
+    {
+        Optional<BookCategoryInfo> opb = bookCategoryInfoJpaRepository.findById(id);
+        return opb.orElse(null);
     }
 }

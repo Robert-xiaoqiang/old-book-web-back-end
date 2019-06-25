@@ -8,4 +8,5 @@ public interface IBookCategoryInfoService {
     public BookCategoryInfo insertOne(String bookCategoryInfoName, String bookCategoryInfoIntro);
     public List<BookCategoryInfo> findAll();
     public BookCategoryInfo findByCategoryName(String categoryName);
+    public BookCategoryInfo findById(Long id);
 }

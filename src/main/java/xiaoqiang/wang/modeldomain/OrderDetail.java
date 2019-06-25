@@ -24,6 +24,8 @@ public class OrderDetail implements Serializable {
     @JoinColumn(name = "order_id")
     private OrderInfo orderInfo;
 
+    // many to one
+    // std::decay<>()::type
     @JsonBackReference
     @OneToOne
             (

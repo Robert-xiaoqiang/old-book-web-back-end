@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class OrderInfo implements Serializable {
     @Column(name = "order_timestamp", nullable = false)
     private Date orderTimestamp;
 
+    @Column(name = "order_state", nullable = false)
+    private short orderState;
+
     @JsonBackReference
     @ManyToOne
             (
@@ -27,8 +31,6 @@ public class OrderInfo implements Serializable {
             )
     @JoinColumn(name = "buyer_id")
     private UserInfo userInfo;
-
-
 
     @JsonManagedReference
     @OneToMany
@@ -38,7 +40,7 @@ public class OrderInfo implements Serializable {
                     },
                     mappedBy = "orderInfo"
             )
-    private List<OrderDetail> orderDetails;
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     public long getId()
     {
@@ -58,6 +60,14 @@ public class OrderInfo implements Serializable {
     public void setOrderTimestamp(Date orderTimestamp)
     {
         this.orderTimestamp = orderTimestamp;
+    }
+
+    public short getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(short orderState) {
+        this.orderState = orderState;
     }
 
     public UserInfo getUserInfo()
@@ -80,10 +90,9 @@ public class OrderInfo implements Serializable {
         this.orderDetails = orderDetails;
     }
 
-    public void addOrderDetailAndSetOrderInfo(OrderDetail orderDetail)
+    public void addOrderDetail(OrderDetail orderDetail)
     {
         orderDetails.add(orderDetail);
-        orderDetail.setOrderInfo(this);
     }
 
 }
