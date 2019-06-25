@@ -349,7 +349,36 @@ public class MainController {
             ret = new MyResponseBody(false, "userName does\'t exist", null);
         } else {
             OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
-            ret = true;
+            OrderInfoResponseBody orderInfoResponseBody = new OrderInfoResponseBody(shoppingCart);
+
+            ret = new MyResponseBody(true, "", orderInfoResponseBody);
+        }
+        return ret;
+    }
+
+    /**
+     * @apiNote
+     * all == state 1 || state 2
+     * ! state 0
+     * @param userName
+     * @return
+     */
+    @RequestMapping(value = "/allorderinfos")
+    public MyResponseBody allOrderInfos(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        // TO-DO login expiration check-out
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            List<OrderInfoResponseBody> orderInfosResponseBody = userInfo.getOrderInfos().stream()
+                    .filter(oi -> oi.getOrderState() != (short)0)
+                    .map(OrderInfoResponseBody::new)
+                    .collect(Collectors.toList());
+            ret = new MyResponseBody(true, "", orderInfosResponseBody);
         }
         return ret;
     }

@@ -7,6 +7,6 @@ import xiaoqiang.wang.modeldomain.UserInfo;
 import java.util.List;
 
 public interface OrderInfoJpaRepository extends JpaRepository<OrderInfo, Long> {
-    public List<OrderInfo> findAllOrderByOrderTimestamp();
+    public List<OrderInfo> findAllByOrderByOrderTimestampAsc();
     public List<OrderInfo> findAllByOrderStateAndUserInfo(Short orderState, UserInfo userInfo);
 }

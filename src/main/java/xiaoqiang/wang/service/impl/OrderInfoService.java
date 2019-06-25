@@ -37,7 +37,7 @@ public class OrderInfoService implements IOrderInfoService {
     @Override
     public List<OrderInfo> findAll()
     {
-        return orderInfoJpaRepository.findAllOrderByOrderTimestamp();
+        return orderInfoJpaRepository.findAllByOrderByOrderTimestampAsc();
     }
 
     @Override
