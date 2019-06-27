@@ -1,7 +1,5 @@
 package xiaoqiang.wang.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xiaoqiang.wang.modeldomain.BookBuy;
 import xiaoqiang.wang.modeldomain.BookInfo;
 import xiaoqiang.wang.modeldomain.UserInfo;

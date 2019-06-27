@@ -134,6 +134,18 @@ public class MainController {
         return ret == null ? null : "http://psz7tw3xz.bkt.clouddn.com/" + ret;
     }
 
+    @RequestMapping(value = "/avatar")
+    public MyResponseBody avatar(
+            @RequestParam String userName
+    )
+    {
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            return new MyResponseBody(false, "userName doesn\'t exist", null);
+        } else {
+            return new MyResponseBody(true, "", userInfo.getAvatarURL());
+        }
+    }
 
     @RequestMapping(value = "/allcategories")
     public MyResponseBody allcategories()
@@ -283,6 +295,26 @@ public class MainController {
         return ret;
     }
 
+    @RequestMapping(value = "/allbookbuys")
+    public MyResponseBody allBookBuys(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret =  new MyResponseBody(false, "userName doesn\'t exist", null);
+        } else {
+            List<BookBuyResponseBody> bookBuyResponseBodies = iBookBuyService.findAll().stream()
+                    .map(BookBuyResponseBody::new)
+                    .collect(Collectors.toList());
+            logger.info(bookBuyResponseBodies.toString());
+            ret = new MyResponseBody(true, "", bookBuyResponseBodies);
+        }
+
+        return ret;
+    }
+
     @RequestMapping(value = "/uploadorderdetail")
     public MyResponseBody uploadOrderDetail(
             @RequestParam String userName,
@@ -331,14 +363,11 @@ public class MainController {
             OrderDetail orderDetail = iOrderDetailService.findOne(orderDetailKey);
             if(orderDetail != null) {
                 orderDetail = null;
-                userInfo = null;
                 iOrderDetailService.deleteOne(orderDetailKey);
 
-                userInfo = iuserInfoService.findByUserName(userName);
                 OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
                 if(shoppingCart.getOrderDetails().isEmpty()) {
-                    Long l = new Long(shoppingCart.getId());
-                    userInfo = null;
+                    Long l = shoppingCart.getId();
                     shoppingCart = null;
                     iOrderInfoService.deleteOne(l);
                 }
@@ -353,52 +382,41 @@ public class MainController {
         return ret;
     }
 
-    private boolean setOrderInfoOrderState(String userName, short orderState)
-    {
-        boolean ret = true;
-        // TO-DO login expiration check-out
-        UserInfo userInfo = iuserInfoService.findByUserName(userName);
-        if(userInfo == null) {
-            ret = false;
-        } else {
-            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
-            shoppingCart.setOrderState(orderState);
-            ret = true;
-        }
-        return ret;
-    }
-
     @RequestMapping(value = "/confirmorderinfo")
     public MyResponseBody confirmOrderInfo(
-            @RequestParam String userName
+            @RequestParam String userName,
+            @RequestParam Long orderInfoKey
     )
     {
         // 2 finish
-        if(setOrderInfoOrderState(userName, (short)2)) {
-            UserInfo userInfo = iuserInfoService.findByUserName(userName);
-            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
-            return new MyResponseBody(true, "", null);
-        } else {
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
             return new MyResponseBody(false, "userName doesn\'t exist", null);
+        } else {
+            OrderInfo shoppingCart = iOrderInfoService.findOne(orderInfoKey);
+            shoppingCart.setOrderState((short)2);
+            shoppingCart.setOrderTimestamp(new Date());
+            iOrderInfoService.updateOne(shoppingCart);
+            return new MyResponseBody(true, "", null);
         }
     }
 
     @RequestMapping(value = "/cancelorderinfo")
     public MyResponseBody cancelOrderInfo(
-            @RequestParam String userName
+            @RequestParam String userName,
+            @RequestParam Long orderInfoKey
     )
     {
         // 1 cancel
-        if(setOrderInfoOrderState(userName, (short)1)) {
-            UserInfo userInfo = iuserInfoService.findByUserName(userName);
-            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
-            Long l = new Long(shoppingCart.getId());
-            userInfo = null;
-            shoppingCart = null;
-            iOrderInfoService.deleteOne(l);
-            return new MyResponseBody(true, "", null);
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            return new MyResponseBody(false, "userName doesn\'t exist", null);
         } else {
-            return new MyResponseBody(false, "userName does\'t exist", null);
+            OrderInfo shoppingCart = iOrderInfoService.findOne(orderInfoKey);
+            shoppingCart.setOrderState((short)1);
+            shoppingCart.setOrderTimestamp(new Date());
+            iOrderInfoService.updateOne(shoppingCart);
+            return new MyResponseBody(true, "", null);
         }
     }
 
@@ -465,15 +483,6 @@ public class MainController {
         return ret;
     }
 
-    private List<Long> getUserOrderInfosKey(UserInfo userInfo)
-    {
-        return  userInfo.getOrderInfos().stream()
-                    .filter(oi -> oi.getOrderState() != (short)0)
-                    .map(OrderInfo::getId)
-                    .map(Long::new)
-                    .collect(Collectors.toList());
-    }
-
     @RequestMapping(value = "/deleteuserorderinfos")
     public MyResponseBody deleteUserOrderInfos(
             @RequestParam String userName
@@ -485,11 +494,12 @@ public class MainController {
         if(userInfo == null) {
             ret = new MyResponseBody(false, "userName does\'t exist", null);
         } else {
-            List<Long> ls = getUserOrderInfosKey(userInfo);
-            userInfo = null;
-            for(Long l : ls) {
-                iOrderInfoService.deleteOne(l);
-            }
+            List<Long> ls = userInfo.getOrderInfos().stream()
+                    .filter(oi -> oi.getOrderState() != (short)0)
+                    .map(OrderInfo::getId)
+                    .collect(Collectors.toList());
+            userInfo.setOrderInfos(null);
+            iOrderInfoService.deleteMany(ls);
             ret = new MyResponseBody(true, "", null);
         }
         return ret;
@@ -524,10 +534,14 @@ public class MainController {
         if(userInfo == null) {
             ret = new MyResponseBody(false, "userName does\'t exist", null);
         } else {
-            userInfo.getBookSells().stream()
+            List<Long> ls = userInfo.getBookSells().stream()
+                    .filter(bs -> bs.getOrderDetail() == null)
                     .map(BookSell::getId)
-                    .collect(Collectors.toList())
-                    .forEach(l -> iBookSellService.deleteOne(l));
+                    .collect(Collectors.toList());
+            userInfo.setBookSells(null);
+            for(Long l : ls) {
+                iBookSellService.deleteOne(l);
+            }
             ret = new MyResponseBody(true, "", null);
         }
 
@@ -580,10 +594,13 @@ public class MainController {
         if(userInfo == null) {
             ret = new MyResponseBody(false, "userName does\'t exist", null);
         } else {
-            userInfo.getBookBuys().stream()
+            List<Long> ls = userInfo.getBookBuys().stream()
                     .map(BookBuy::getId)
-                    .collect(Collectors.toList())
-                    .forEach(l -> iBookBuyService.deleteOne(l));
+                    .collect(Collectors.toList());
+            userInfo.setBookBuys(null);
+            for(Long l : ls) {
+                iBookBuyService.deleteOne(l);
+            }
             ret = new MyResponseBody(true, "", null);
         }
 

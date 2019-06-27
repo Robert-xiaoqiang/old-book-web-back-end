@@ -42,7 +42,6 @@ public class BookBuy implements Serializable {
         Id = id;
     }
 
-
     public void setBookInfo(BookInfo bookInfo)
     {
         this.bookInfo = bookInfo;

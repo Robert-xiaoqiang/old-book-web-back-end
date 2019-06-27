@@ -10,6 +10,7 @@ import xiaoqiang.wang.service.IOrderInfoService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,9 +30,24 @@ public class OrderInfoService implements IOrderInfoService {
     }
 
     @Override
+    public OrderInfo updateOne(OrderInfo orderInfo)
+    {
+        orderInfoJpaRepository.save(orderInfo);
+        return orderInfo;
+    }
+
+    @Override
     public void deleteOne(Long id)
     {
         orderInfoJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteMany(List<Long> ids)
+    {
+        for(Long id : ids) {
+            orderInfoJpaRepository.deleteById(id);
+        }
     }
 
     @Override

@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class BookBuyResponseBody implements Serializable {
     private final static long serialVersion = 1l;
 
-    private BookInfoResponseBody bookInfoResponseBody;
-    private String sellerName;
+    private BookInfo bookInfo;
+    private String buyerName;
     private double lowerPrice;
     private double upperPrice;
 
@@ -17,32 +17,37 @@ public class BookBuyResponseBody implements Serializable {
 
     public BookBuyResponseBody(BookBuy bookBuy)
     {
-        this.bookInfoResponseBody = new BookInfoResponseBody(bookBuy.getBookInfo());
-        this.sellerName = bookBuy.getUserInfo().getUserName();
+        this.bookInfo = bookBuy.getBookInfo();
+
+        this.buyerName = bookBuy.getUserInfo().getUserName();
         this.lowerPrice = bookBuy.getLowerPrice();
         this.upperPrice = bookBuy.getUpperPrice();
 
         this.key = bookBuy.getId();
     }
 
-    public String getSellerName() {
-        return sellerName;
+    public static long getSerialVersion() {
+        return serialVersion;
     }
 
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
     public double getUpperPrice() {
         return upperPrice;
     }
 
-    public BookInfoResponseBody getBookInfoResponseBody() {
-        return bookInfoResponseBody;
+    public BookInfo getBookInfo() {
+        return bookInfo;
     }
 
-    public void setBookInfoResponseBody(BookInfoResponseBody bookInfoResponseBody) {
-        this.bookInfoResponseBody = bookInfoResponseBody;
+    public void setBookInfo(BookInfo bookInfo) {
+        this.bookInfo = bookInfo;
     }
 
     public double getLowerPrice() {

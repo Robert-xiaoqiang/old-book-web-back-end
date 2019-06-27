@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -17,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value = "/api/websocket")
 @Component
+@RestController
 public class MyWebSocket {
     private static int onlineCount = 0;
     private static ConcurrentHashMap<String, Session> guySessionMap = new ConcurrentHashMap<>();

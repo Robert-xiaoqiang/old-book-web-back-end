@@ -10,7 +10,7 @@
     </parent>
     <groupId>xiaoqiang.wang</groupId>
     <artifactId>oldbooksystem</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>oldbooksystem</name>
     <description>Old Book Circulation System project for Spring Boot</description>
 
@@ -34,7 +34,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
-            <version>1.3.5.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

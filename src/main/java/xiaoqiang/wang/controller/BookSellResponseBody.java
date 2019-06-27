@@ -14,6 +14,8 @@ public class BookSellResponseBody implements Serializable {
     private double originPrice;
     private double sellPrice;
 
+    private boolean ordered;
+
     public BookSellResponseBody(BookSell bookSell)
     {
         this.key = bookSell.getId();
@@ -22,6 +24,8 @@ public class BookSellResponseBody implements Serializable {
         this.sellerName = bookSell.getUserInfo().getUserName();
         this.originPrice = bookSell.getOriginPrice();
         this.sellPrice = bookSell.getSellPrice();
+
+        this.ordered = bookSell.getOrderDetail() != null;
     }
 
     public String getSellerName() {
@@ -68,4 +72,11 @@ public class BookSellResponseBody implements Serializable {
         this.key = key;
     }
 
+    public boolean isOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(boolean ordered) {
+        this.ordered = ordered;
+    }
 }
