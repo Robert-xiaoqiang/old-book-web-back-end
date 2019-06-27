@@ -44,10 +44,10 @@ public class BookSell implements Serializable {
     @JsonManagedReference
     @OneToOne
             (
+                    mappedBy = "bookSell",
                     cascade = {
-                            CascadeType.ALL
-                    },
-                    mappedBy = "bookSell"
+                            CascadeType.REMOVE
+                    }
             )
     private OrderDetail orderDetail;
 

@@ -10,5 +10,7 @@ import java.util.List;
 
 public interface IBookBuyService {
     public BookBuy insertOne(BookInfo bookInfo, UserInfo userInfo, double lowerPrice, double upperPrice);
+    public void deleteOne(Long id);
+    public BookBuy findOne(Long id);
     public List<BookBuy> findAll();
 }

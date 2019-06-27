@@ -31,6 +31,12 @@ public class OrderDetailService implements IOrderDetailService {
     }
 
     @Override
+    public OrderDetail findOne(Long id)
+    {
+        return orderDetailJpaRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public void deleteOne(Long id)
     {
         orderDetailJpaRepository.deleteById(id);

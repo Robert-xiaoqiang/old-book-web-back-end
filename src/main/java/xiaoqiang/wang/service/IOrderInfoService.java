@@ -12,5 +12,6 @@ public interface IOrderInfoService {
     public OrderInfo insertOne(UserInfo userInfo, Date orderTimestamp, Short state);
     public void deleteOne(Long id);
     public List<OrderInfo> findAll();
+    public OrderInfo findOne(Long id);
     public OrderInfo findShoppingCart(UserInfo userInfo);
 }

@@ -8,5 +8,6 @@ import java.util.Date;
 
 public interface IOrderDetailService {
     public OrderDetail insertOne(OrderInfo orderInfo, BookSell bookSell, String tradePlace, Date tradeTimestamp);
+    public OrderDetail findOne(Long id);
     public void deleteOne(Long id);
 }

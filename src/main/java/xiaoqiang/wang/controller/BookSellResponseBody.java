@@ -28,8 +28,16 @@ public class BookSellResponseBody implements Serializable {
         return sellerName;
     }
 
+    public BookInfo getBookInfo() {
+        return bookInfo;
+    }
+
     public void setBookInfo(BookInfo bookInfo) {
         this.bookInfo = bookInfo;
+    }
+
+    public static long getSerialVersion() {
+        return serialVersion;
     }
 
     public double getSellPrice() {
@@ -48,10 +56,6 @@ public class BookSellResponseBody implements Serializable {
         this.originPrice = originPrice;
     }
 
-    public BookInfo getBookInfo() {
-        return bookInfo;
-    }
-
     public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
@@ -63,4 +67,5 @@ public class BookSellResponseBody implements Serializable {
     public void setKey(Long key) {
         this.key = key;
     }
+
 }

@@ -34,7 +34,6 @@ public class OrderDetail implements Serializable {
     @JoinColumn(name = "book_sell_id", unique = true)
     private BookSell bookSell;
 
-
     @Column(name = "trade_place", nullable = false)
     private String tradePlace;
 

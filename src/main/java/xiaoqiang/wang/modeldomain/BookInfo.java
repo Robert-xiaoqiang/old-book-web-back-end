@@ -1,5 +1,6 @@
 package xiaoqiang.wang.modeldomain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class BookInfo implements Serializable {
             )
     private List<BookCategoryInfo> bookCategoryInfos = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany
             (
                     cascade = {
@@ -62,7 +63,7 @@ public class BookInfo implements Serializable {
             )
     private List<BookSell> bookSells = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany
             (
                     cascade = {

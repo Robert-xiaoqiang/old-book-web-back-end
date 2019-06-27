@@ -34,6 +34,18 @@ public class BookBuyService implements IBookBuyService {
     }
 
     @Override
+    public void deleteOne(Long id)
+    {
+        bookBuyJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public BookBuy findOne(Long id)
+    {
+        return bookBuyJpaRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<BookBuy> findAll()
     {
         return bookBuyJpaRepository.findAll();

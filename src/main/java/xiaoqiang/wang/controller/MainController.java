@@ -17,6 +17,7 @@ import sun.misc.BASE64Decoder;
 import xiaoqiang.wang.modeldomain.*;
 import xiaoqiang.wang.service.*;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -137,8 +138,10 @@ public class MainController {
     @RequestMapping(value = "/allcategories")
     public MyResponseBody allcategories()
     {
-        List<BookCategoryInfo> bcis = ibookCategoryInfoService.findAll();
-        return new MyResponseBody(true, "", bcis);
+        List<BookCategoryInfoResponseBody> ret = ibookCategoryInfoService.findAll().stream()
+                .map(BookCategoryInfoResponseBody::new)
+                .collect(Collectors.toList());
+        return new MyResponseBody(true, "", ret);
     }
 
     private BookInfo parserBookInfoAndCategoryInfos(
@@ -204,6 +207,45 @@ public class MainController {
         return ret;
     }
 
+    @RequestMapping(value = "/querybooksell")
+    public MyResponseBody queryBookSell(
+            @RequestParam String bookName,
+            @RequestParam String sellerName,
+            @RequestParam List<Long> bookCategoryKeys
+    )
+    {
+        MyResponseBody ret = null;
+        List<BookSell> bookSells = null;
+        if(bookName.isEmpty() && sellerName.isEmpty() && bookCategoryKeys.isEmpty()) {
+            bookSells = iBookSellService.findAll().stream()
+                    .filter(bs -> bs.getOrderDetail() == null)
+                    .collect(Collectors.toList());
+        } else {
+            List<BookCategoryInfo> bookCategoryInfos = bookCategoryKeys.stream()
+                    .map(l -> ibookCategoryInfoService.findById(l))
+                    .collect(Collectors.toList());
+
+            bookSells = iBookSellService.findAllByBookCategoryInfos(bookCategoryInfos);
+
+            if(!bookName.isEmpty()) {
+                bookSells = bookSells.stream()
+                        .filter(bs -> bs.getBookInfo().getBookName().contains(bookName))
+                        .collect(Collectors.toList());
+            }
+
+            if(!sellerName.isEmpty()) {
+                bookSells = bookSells.stream()
+                        .filter(bs -> bs.getUserInfo().getUserName().contains(sellerName))
+                        .collect(Collectors.toList());
+            }
+
+        }
+        List<BookSellResponseBody> bookSellResponseBodies = bookSells.stream()
+                .map(BookSellResponseBody::new)
+                .collect(Collectors.toList());
+        return new MyResponseBody(true, "", bookSellResponseBodies);
+    }
+
     @RequestMapping(value = "/uploadbookbuy")
     public MyResponseBody uploadBookBuy(
             @RequestParam String userName,
@@ -246,7 +288,8 @@ public class MainController {
             @RequestParam String userName,
             @RequestParam Long bookSellKey,
             @RequestParam String tradePlace,
-            @RequestParam Date tradeTimestamp // required & may be null
+            @RequestParam(required = false) Date tradeTimestamp
+            // not required & may be null
             )
     {
         // TO-DO login expiration check-out
@@ -285,12 +328,26 @@ public class MainController {
         if(userInfo == null) {
             ret = new MyResponseBody(false, "", null);
         } else {
-            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
-            iOrderDetailService.deleteOne(orderDetailKey);
-            if(shoppingCart.getOrderDetails().isEmpty()) {
-                iOrderInfoService.deleteOne(shoppingCart.getId());
+            OrderDetail orderDetail = iOrderDetailService.findOne(orderDetailKey);
+            if(orderDetail != null) {
+                orderDetail = null;
+                userInfo = null;
+                iOrderDetailService.deleteOne(orderDetailKey);
+
+                userInfo = iuserInfoService.findByUserName(userName);
+                OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
+                if(shoppingCart.getOrderDetails().isEmpty()) {
+                    Long l = new Long(shoppingCart.getId());
+                    userInfo = null;
+                    shoppingCart = null;
+                    iOrderInfoService.deleteOne(l);
+                }
+
+                ret = new MyResponseBody(true, "", iOrderInfoService.findAll());
+            } else {
+                ret = new MyResponseBody(false, "orderDetail key doesn\'t exist", null);
             }
-            ret = new MyResponseBody(true, "", null);
+
         }
 
         return ret;
@@ -318,6 +375,8 @@ public class MainController {
     {
         // 2 finish
         if(setOrderInfoOrderState(userName, (short)2)) {
+            UserInfo userInfo = iuserInfoService.findByUserName(userName);
+            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
             return new MyResponseBody(true, "", null);
         } else {
             return new MyResponseBody(false, "userName doesn\'t exist", null);
@@ -331,6 +390,12 @@ public class MainController {
     {
         // 1 cancel
         if(setOrderInfoOrderState(userName, (short)1)) {
+            UserInfo userInfo = iuserInfoService.findByUserName(userName);
+            OrderInfo shoppingCart = iOrderInfoService.findShoppingCart(userInfo);
+            Long l = new Long(shoppingCart.getId());
+            userInfo = null;
+            shoppingCart = null;
+            iOrderInfoService.deleteOne(l);
             return new MyResponseBody(true, "", null);
         } else {
             return new MyResponseBody(false, "userName does\'t exist", null);
@@ -363,8 +428,8 @@ public class MainController {
      * @param userName
      * @return
      */
-    @RequestMapping(value = "/allorderinfos")
-    public MyResponseBody allOrderInfos(
+    @RequestMapping(value = "/userorderinfos")
+    public MyResponseBody userOrderInfos(
             @RequestParam String userName
     )
     {
@@ -375,12 +440,172 @@ public class MainController {
             ret = new MyResponseBody(false, "userName does\'t exist", null);
         } else {
             List<OrderInfoResponseBody> orderInfosResponseBody = userInfo.getOrderInfos().stream()
-                    .filter(oi -> oi.getOrderState() != (short)0)
                     .map(OrderInfoResponseBody::new)
                     .collect(Collectors.toList());
             ret = new MyResponseBody(true, "", orderInfosResponseBody);
         }
         return ret;
     }
+
+    @RequestMapping(value = "/deleteorderinfo")
+    public MyResponseBody deleteOrderInfo(
+            @RequestParam Long orderInfoKey
+    )
+    {
+        MyResponseBody ret = null;
+        // TO-DO login expiration check-out
+        OrderInfo orderInfo = iOrderInfoService.findOne(orderInfoKey);
+        if(orderInfo == null) {
+            ret = new MyResponseBody(false, "orderInfo does\'t exist", null);
+        } else {
+            orderInfo = null;
+            iOrderInfoService.deleteOne(orderInfoKey);
+            ret = new MyResponseBody(true, "", null);
+        }
+        return ret;
+    }
+
+    private List<Long> getUserOrderInfosKey(UserInfo userInfo)
+    {
+        return  userInfo.getOrderInfos().stream()
+                    .filter(oi -> oi.getOrderState() != (short)0)
+                    .map(OrderInfo::getId)
+                    .map(Long::new)
+                    .collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "/deleteuserorderinfos")
+    public MyResponseBody deleteUserOrderInfos(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        // TO-DO login expiration check-out
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            List<Long> ls = getUserOrderInfosKey(userInfo);
+            userInfo = null;
+            for(Long l : ls) {
+                iOrderInfoService.deleteOne(l);
+            }
+            ret = new MyResponseBody(true, "", null);
+        }
+        return ret;
+    }
+
+    @RequestMapping(value = "/userbooksells")
+    public MyResponseBody userBookSells(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        // TO-DO login expiration check-out
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            List<BookSellResponseBody> bookSellResponseBodies = userInfo.getBookSells().stream()
+                    .map(BookSellResponseBody::new)
+                    .collect(Collectors.toList());
+            ret = new MyResponseBody(true, "", bookSellResponseBodies);
+        }
+        return ret;
+    }
+
+    @RequestMapping(value = "/deleteuserbooksells")
+    public MyResponseBody deleteUserBookSells(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            userInfo.getBookSells().stream()
+                    .map(BookSell::getId)
+                    .collect(Collectors.toList())
+                    .forEach(l -> iBookSellService.deleteOne(l));
+            ret = new MyResponseBody(true, "", null);
+        }
+
+        return ret;
+    }
+
+    @RequestMapping(value = "/deletebooksell")
+    public MyResponseBody deleteBookSell(
+            @RequestParam Long bookSellKey
+    )
+    {
+        MyResponseBody ret = null;
+        BookSell bookSell = iBookSellService.findOne(bookSellKey);
+        if(bookSell == null) {
+            ret = new MyResponseBody(false, "invalid key", null);
+        } else {
+            iBookSellService.deleteOne(bookSellKey);
+            ret = new MyResponseBody(true, "", null);
+        }
+
+        return ret;
+    }
+
+    @RequestMapping(value = "/userbookbuys")
+    public MyResponseBody userBookBuys(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        // TO-DO login expiration check-out
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            List<BookBuyResponseBody> bookBuyResponseBodies = userInfo.getBookBuys().stream()
+                    .map(BookBuyResponseBody::new)
+                    .collect(Collectors.toList());
+            ret = new MyResponseBody(true, "", bookBuyResponseBodies);
+        }
+        return ret;
+    }
+
+    @RequestMapping(value = "/deleteuserbookbuys")
+    public MyResponseBody deleteUserBookBuys(
+            @RequestParam String userName
+    )
+    {
+        MyResponseBody ret = null;
+        UserInfo userInfo = iuserInfoService.findByUserName(userName);
+        if(userInfo == null) {
+            ret = new MyResponseBody(false, "userName does\'t exist", null);
+        } else {
+            userInfo.getBookBuys().stream()
+                    .map(BookBuy::getId)
+                    .collect(Collectors.toList())
+                    .forEach(l -> iBookBuyService.deleteOne(l));
+            ret = new MyResponseBody(true, "", null);
+        }
+
+        return ret;
+    }
+
+    @RequestMapping(value = "/deletebookbuy")
+    public MyResponseBody deleteBookBuy(
+            @RequestParam Long bookBuyKey
+    )
+    {
+        MyResponseBody ret = null;
+        BookBuy bookBuy = iBookBuyService.findOne(bookBuyKey);
+        if(bookBuy == null) {
+            ret = new MyResponseBody(false, "invalid key", null);
+        } else {
+            iBookBuyService.deleteOne(bookBuyKey);
+            ret = new MyResponseBody(true, "", null);
+        }
+
+        return ret;
+    }
+
 }
 
