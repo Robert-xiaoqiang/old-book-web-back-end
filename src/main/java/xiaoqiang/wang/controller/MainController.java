@@ -167,6 +167,7 @@ public class MainController {
         String bookImageURL = uploadImage(bookImageBase64);
         List<BookCategoryInfo> bookCategoryInfos = bookCategoryKeys.stream()
                 .map(Long::valueOf)
+                .distinct()
                 .map(pk -> ibookCategoryInfoService.findById(pk))
                 .collect(Collectors.toList());
 
@@ -234,6 +235,7 @@ public class MainController {
                     .collect(Collectors.toList());
         } else {
             List<BookCategoryInfo> bookCategoryInfos = bookCategoryKeys.stream()
+                    .distinct()
                     .map(l -> ibookCategoryInfoService.findById(l))
                     .collect(Collectors.toList());
 
@@ -250,6 +252,10 @@ public class MainController {
                         .filter(bs -> bs.getUserInfo().getUserName().contains(sellerName))
                         .collect(Collectors.toList());
             }
+
+            bookSells = bookSells.stream()
+                        .filter(bs -> bs.getOrderDetail() == null)
+                        .collect(Collectors.toList());
 
         }
         List<BookSellResponseBody> bookSellResponseBodies = bookSells.stream()
