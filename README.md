@@ -1,8 +1,8 @@
 # old-book-web-back-end
 
-> I have got a full marks in BS curriculum.
+> I have got a full mark in BS curriculum.
 >
-> Now, I make it public
+> Now, I make it public.
 
 ## prerequisites
 
